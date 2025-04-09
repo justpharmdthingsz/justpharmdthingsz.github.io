@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharma Connect</title>
+    <style>
+        :root {
+            --primary: #4a6bff;
+            --secondary: #f8f9fa;
+            --accent: #ff6b6b;
+            --text: #333;
+            --light-text: #6c757d;
+            --white: #fff;
+            --border: #e0e0e0;
+            --success: #28a745;
+            --error: #dc3545;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--secondary);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .form-container {
+            padding: 30px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo h2 {
+            color: var(--primary);
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .logo p {
+            color: var(--light-text);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--light-text);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tab.active {
+            color: var(--primary);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .form {
+            display: none;
+        }
+
+        .form.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 107, 255, 0.2);
+        }
+
+        .input-group .error {
+            color: var(--error);
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .input-group.error input, .input-group.error select {
+            border-color: var(--error);
+        }
+
+        .input-group.error .error {
+            display: block;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+
+        .remember-me input {
+            margin-right: 8px;
+        }
+
+        .forgot-password {
+            color: var(--primary);
+            font-size: 13px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary);
+            color: var(--white);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .btn:hover {
+            background: #3a5bef;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 107, 255, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .switch-form {
+            text-align: center;
+            font-size: 14px;
+            color: var(--light-text);
+        }
+
+        .switch-form a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 5px;
+        }
+
+        .switch-form a:hover {
+            text-decoration: underline;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 40px;
+            cursor: pointer;
+            color: var(--light-text);
+        }
+
+        /* Forgot Password Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: var(--text);
+            font-size: 18px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: var(--light-text);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .modal-btn.cancel {
+            background: var(--secondary);
+            color: var(--text);
+        }
+
+        .modal-btn.submit {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        /* Success/Error Messages */
+        .alert {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert.success {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+        .alert.error {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 10px;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <div class="logo">
+                <h2>Pharma Connect</h2>
+                <p>Connecting pharmacy professionals</p>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('login')">Login</div>
+                <div class="tab" onclick="switchTab('signup')">Sign Up</div>
+            </div>
+
+            <!-- Alert Messages -->
+            <div class="alert" id="alert-message"></div>
+
+            <!-- Login Form -->
+            <form id="login-form" class="form active">
+                <div class="input-group">
+                    <label for="login-mobile">Mobile Number</label>
+                    <input type="tel" id="login-mobile" placeholder="Enter 10-digit mobile number">
+                    <div class="error">Please enter a valid 10-digit mobile number</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password">
+                    <span class="password-toggle" onclick="togglePassword('login-password', this)">👁️</span>
+                    <div class="error">Password must be at least 8 characters</div>
+                </div>
+
+                <div class="remember-forgot">
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember-me">
+                        <label for="remember-me">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password" onclick="openForgotPasswordModal()">Forgot Password?</a>
+                </div>
+
+                <button type="button" class="btn" onclick="login()">Login</button>
+
+                <div class="switch-form">
+                    Don't have an account? <a href="#" onclick="switchTab('signup')">Sign up</a>
+                </div>
+            </form>
+
+            <!-- Signup Form -->
+            <form id="signup-form" class="form">
+                <div class="input-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" placeholder="Enter your full name">
+                    <div class="error">Please enter your name</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" placeholder="Enter your email">
+                    <div class="error">Please enter a valid email address</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="signup-mobile">Mobile Number</label>
+                    <input type="tel" id="signup-mobile" placeholder="Enter 10-digit mobile number">
+                    <div class="error">Please enter a valid 10-digit mobile number</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" placeholder="Create a password (min 8 chars)">
+                    <span class="password-toggle" onclick="togglePassword('signup-password', this)">👁️</span>
+                    <div class="error">Password must be at least 8 characters</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="signup-confirm-password">Confirm Password</label>
+                    <input type="password" id="signup-confirm-password" placeholder="Confirm your password">
+                    <span class="password-toggle" onclick="togglePassword('signup-confirm-password', this)">👁️</span>
+                    <div class="error">Passwords don't match</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="signup-degree">Degree</label>
+                    <select id="signup-degree">
+                        <option value="">Select your degree</option>
+                        <option value="DPharm">DPharm</option>
+                        <option value="BPharm">BPharm</option>
+                        <option value="PharmD">PharmD</option>
+                    </select>
+                    <div class="error">Please select your degree</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="signup-graduation">Year of Graduation</label>
+                    <input type="number" id="signup-graduation" placeholder="YYYY" min="1900" max="2099">
+                    <div class="error">Please enter a valid graduation year</div>
+                </div>
+
+                <button type="button" class="btn" onclick="signup()">Create Account</button>
+
+                <div class="switch-form">
+                    Already have an account? <a href="#" onclick="switchTab('login')">Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal" id="forgot-password-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Reset Password</h3>
+                <button class="close-modal" onclick="closeForgotPasswordModal()">&times;</button>
+            </div>
+            <div class="input-group">
+                <label for="reset-email">Email</label>
+                <input type="email" id="reset-email" placeholder="Enter your registered email">
+                <div class="error">Please enter a valid email address</div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel" onclick="closeForgotPasswordModal()">Cancel</button>
+                <button class="modal-btn submit" onclick="resetPassword()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentForm = 'login';
+        let deviceId = generateDeviceId();
+        
+        // Generate a unique device ID
+        function generateDeviceId() {
+            return 'device-' + Math.random().toString(36).substr(2, 9) + '-' + new Date().getTime();
+        }
+        
+        // Switch between login and signup forms
+        function switchTab(tab) {
+            if (tab === currentForm) return;
+            
+            // Update tabs
+            document.querySelector('.tab.active').classList.remove('active');
+            document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+            
+            // Update forms
+            document.querySelector('.form.active').classList.remove('active');
+            document.getElementById(`${tab}-form`).classList.add('active');
+            
+            currentForm = tab;
+            hideAlert();
+        }
+        
+        // Toggle password visibility
+        function togglePassword(inputId, toggleElement) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggleElement.textContent = '👁️';
+            } else {
+                input.type = 'password';
+                toggleElement.textContent = '👁️';
+            }
+        }
+        
+        // Validate email format
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        // Validate mobile number (10 digits)
+        function validateMobile(mobile) {
+            return /^\d{10}$/.test(mobile);
+        }
+        
+        // Validate password (min 8 chars)
+        function validatePassword(password) {
+            return password.length >= 8;
+        }
+        
+        // Show alert message
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert-message');
+            alert.textContent = message;
+            alert.className = `alert ${type}`;
+            alert.style.display = 'block';
+            
+            setTimeout(hideAlert, 5000);
+        }
+        
+        // Hide alert message
+        function hideAlert() {
+            document.getElementById('alert-message').style.display = 'none';
+        }
+        
+        // Validate login form
+        function validateLoginForm() {
+            let isValid = true;
+            const mobile = document.getElementById('login-mobile').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            
+            // Validate mobile
+            if (!validateMobile(mobile)) {
+                document.querySelector('#login-form .input-group:nth-child(1)').classList.add('error');
+                isValid = false;
+            } else {
+                document.querySelector('#login-form .input-group:nth-child(1)').classList.remove('error');
+            }
+            
+            // Validate password
+            if (!validatePassword(password)) {
+                document.querySelector('#login-form .input-group:nth-child(2)').classList.add('error');
+                isValid = false;
+            } else {
+                document.querySelector('#login-form .input-group:nth-child(2)').classList.remove('error');
+            }
+            
+            return isValid;
+        }
+        
+        // Validate signup form
+        function validateSignupForm() {
+            let isValid = true;
+            const name = document.getElementById('signup-name').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const mobile = document.getElementById('signup-mobile').value.trim();
+            const password = document.getElementById('signup-password').value.trim();
+            const confirmPassword = document.getElementById('signup-confirm-password').value.trim();
+            const degree = document.getElementById('signup-degree').value;
+            const graduation = document.getElementById('signup-graduation').value.trim();
+            
+            // Validate name
+            if (name === '') {
+                document.querySelector('#signup-form .input-group:nth-child(1)').classList.add('error');
+                isValid = false;
+            } else {
+                document.querySelector('#signup-form .input-group:nth-child(1)').classList.remove('error');
+            }
+            
+            // Validate email
+            if (!validateEmail(email)) {
+                document.querySelector('#signup-form .input-group:nth-child(2)').classList.add('error');
+                isValid = false;
+            } else {
+                document.querySelector('#signup-form .input-group:nth-child(2)').classList.remove('error');
+            }
+            
+            // Validate mobile
+            if (!validateMobile(mobile)) {
+                document.querySelector('#signup-form .input-group:nth-child(3)').classList.add('error');
+                isValid = false;
+            } else {
+                document.querySelector('#signup-form .input-group:nth-child(3)').classList.remove('error');
+            }
+            
+            // Validate password
+            if (!validatePassword(password)) {
+                document.querySelector('#signup-form .input-group:nth-child(4)').classList.add('error');
+                isValid = false;
+            } else {
+                document.querySelector('#signup-form .input-group:nth-child(4)').classList.remove('error');
+            }
+            
+            // Validate confirm password
+            if (password !== confirmPassword || confirmPassword === '') {
+                document.querySelector('#signup-form .input-group:nth-child(5)').classList.add('error');
+                isValid = false;
+            } else {
+                document.querySelector('#signup-form .input-group:nth-child(5)').classList.remove('error');
+            }
+            
+            // Validate degree
+            if (degree === '') {
+                document.querySelector('#signup-form .input-group:nth-child(6)').classList.add('error');
+                isValid = false;
+            } else {
+                document.querySelector('#signup-form .input-group:nth-child(6)').classList.remove('error');
+            }
+            
+            // Validate graduation year
+            const currentYear = new Date().getFullYear();
+            if (graduation === '' || graduation < 1900 || graduation > currentYear + 5) {
+                document.querySelector('#signup-form .input-group:nth-child(7)').classList.add('error');
+                isValid = false;
+            } else {
+                document.querySelector('#signup-form .input-group:nth-child(7)').classList.remove('error');
+            }
+            
+            return isValid;
+        }
+        
+        // Open forgot password modal
+        function openForgotPasswordModal() {
+            document.getElementById('forgot-password-modal').style.display = 'flex';
+        }
+        
+        // Close forgot password modal
+        function closeForgotPasswordModal() {
+            document.getElementById('forgot-password-modal').style.display = 'none';
+            document.getElementById('reset-email').value = '';
+            document.querySelector('#forgot-password-modal .input-group').classList.remove('error');
+        }
+        
+        // Validate reset password email
+        function validateResetEmail() {
+            const email = document.getElementById('reset-email').value.trim();
+            
+            if (!validateEmail(email)) {
+                document.querySelector('#forgot-password-modal .input-group').classList.add('error');
+                return false;
+            } else {
+                document.querySelector('#forgot-password-modal .input-group').classList.remove('error');
+                return true;
+            }
+        }
+        
+        // Reset password
+        function resetPassword() {
+            if (!validateResetEmail()) return;
+            
+            const email = document.getElementById('reset-email').value.trim();
+            
+            // In a real app, you would send this to your backend
+            console.log('Password reset requested for:', email);
+            
+            showAlert('Password reset link has been sent to your email', 'success');
+            closeForgotPasswordModal();
+        }
+        
+        // Login function
+        async function login() {
+  if (!validateLoginForm()) return;
+  
+  const mobile = document.getElementById('login-mobile').value.trim();
+  const password = document.getElementById('login-password').value.trim();
+  const rememberMe = document.getElementById('remember-me').checked;
+  
+  try {
+    const response = await fetch(`${API_URL}?action=login&mobile=${mobile}&password=${password}&device_id=${deviceId}`);
+    const result = await response.json();
+    
+    if (result.success) {
+      showAlert('Login successful!', 'success');
+      
+      // Store in localStorage if "Remember me" is checked
+      if (rememberMe) {
+        localStorage.setItem('pharmaConnectMobile', mobile);
+      }
+      
+      // Notify MIT App Inventor to navigate
+      if (window.AppInventor) {
+        window.AppInventor.setWebViewString(`login_success:${mobile}`);
+      }
+    } else {
+      showAlert(result.message, 'error');
+    }
+  } catch (error) {
+    showAlert('Network error. Try again.', 'error');
+  }
+}
+        
+        // Simulate API call to your backend
+        function simulateLoginApiCall(mobile, password, rememberMe) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    // In a real app, this would check against your database
+                    // For demo, we'll assume login is successful if password is "password123"
+                    
+                    // Check if user is already logged in on another device
+                    const isAlreadyLoggedIn = checkIfUserIsLoggedInElsewhere(mobile);
+                    
+                    if (isAlreadyLoggedIn) {
+                        resolve({
+                            success: false,
+                            message: 'You are already logged in on another device. Please logout there first.'
+                        });
+                        return;
+                    }
+                    
+                    if (password === 'password123') {
+                        // In a real app, you would store the device ID in your database
+                        storeDeviceIdInDatabase(mobile, deviceId);
+                        
+                        resolve({
+                            success: true,
+                            message: 'Login successful'
+                        });
+                    } else {
+                        resolve({
+                            success: false,
+                            message: 'Invalid mobile number or password'
+                        });
+                    }
+                }, 1500);
+            });
+        }
+        
+        // Signup function
+        async function signup() {
+  if (!validateSignupForm()) return;
+
+  const signupBtn = document.querySelector('#signup-form .btn');
+  signupBtn.disabled = true;
+  signupBtn.textContent = 'Creating account...';
+
+  try {
+    const data = {
+      mobile: document.getElementById('signup-mobile').value.trim(),
+      email: document.getElementById('signup-email').value.trim(),
+      name: document.getElementById('signup-name').value.trim(),
+      password: document.getElementById('signup-password').value.trim(),
+      degree: document.getElementById('signup-degree').value,
+      graduation_year: document.getElementById('signup-graduation').value.trim()
+    };
+
+    // Use a proxy if needed (see step 3)
+    const API_URL = "https://script.google.com/macros/s/AKfycbxMDwa2rv8QCqBcUNCxLil_L_y9gnxVt8zSVwY7mGnCAQI4A2wqRdCAEw-_OuJM4Q/exec";
+    const PROXY_URL = "https://cors-anywhere.herokuapp.com/";
+    const response = await fetch(PROXY_URL + API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8',
+      },
+      body: JSON.stringify(data)
+    });
+
+    // Check for HTTP errors
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+    }
+
+    const result = await response.json();
+    
+    if (result.success) {
+      showAlert('Account created! Please login.', 'success');
+      switchTab('login');
+      document.getElementById('login-mobile').value = data.mobile;
+    } else {
+      showAlert(result.message || 'Signup failed', 'error');
+    }
+  } catch (error) {
+    console.error('Signup error:', error);
+    showAlert(`Signup failed: ${error.message}`, 'error');
+  } finally {
+    signupBtn.disabled = false;
+    signupBtn.textContent = 'Create Account';
+  }
+}
+
+        // Simulate API call to your backend for signup
+        function simulateSignupApiCall(name, email, mobile, password, degree, graduation) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    // In a real app, this would save to your database
+                    // For demo, we'll assume signup is always successful
+                    
+                    // Generate a simple user ID for demo purposes
+                    const userId = 'user-' + Math.random().toString(36).substr(2, 8);
+                    
+                    // In a real app, you would:
+                    // 1. Hash the password before storing
+                    // 2. Store all user details in your database
+                    // 3. Send a verification email if needed
+                    
+                    console.log('User signed up:', { 
+                        userId, name, email, mobile, 
+                        degree, graduation 
+                    });
+                    
+                    resolve({
+                        success: true,
+                        message: 'Account created successfully'
+                    });
+                }, 1500);
+            });
+        }
+        
+        // Check if user is already logged in on another device
+        function checkIfUserIsLoggedInElsewhere(mobile) {
+            // In a real app, this would query your database
+            // For demo, we'll assume no one is logged in by default
+            return false;
+        }
+        
+        // Store device ID in database (simulated)
+        function storeDeviceIdInDatabase(mobile, deviceId) {
+            // In a real app, you would:
+            // 1. Update your user record in the database with this device ID
+            // 2. This allows you to check if the user tries to login from another device
+            console.log(`Storing device ID ${deviceId} for mobile ${mobile} in database`);
+        }
+        
+        // Check for remembered login on page load
+        window.onload = function() {
+            if (localStorage.getItem('pharmaConnectRememberMe') === 'true') {
+                const rememberedMobile = localStorage.getItem('pharmaConnectMobile');
+                if (rememberedMobile) {
+                    document.getElementById('login-mobile').value = rememberedMobile;
+                    document.getElementById('remember-me').checked = true;
+                }
+            }
+            
+            // Check if already logged in on another device
+            const storedDeviceId = sessionStorage.getItem('pharmaConnectDeviceId');
+            if (storedDeviceId && storedDeviceId !== deviceId) {
+                showAlert('You are already logged in on another device. Please logout there first.', 'error');
+            }
+        };
+        
+        // Function to handle logout from MIT App Inventor
+        function logout() {
+            // Get the mobile number from session
+            const mobile = localStorage.getItem('pharmaConnectMobile') || 
+                          sessionStorage.getItem('pharmaConnectMobile');
+            
+            if (mobile) {
+                // In a real app, you would call your backend to clear the device ID
+                clearDeviceIdInDatabase(mobile);
+            }
+            
+            // Clear local storage
+            sessionStorage.removeItem('pharmaConnectDeviceId');
+            
+            // For demo purposes
+            console.log('User logged out. Can now login from another device.');
+            
+            // In MIT App Inventor, you would call this when the user logs out
+            if (window.AppInventor) {
+                window.AppInventor.setWebViewString('logout_success');
+            }
+        }
+        
+        // Clear device ID in database (simulated)
+        function clearDeviceIdInDatabase(mobile) {
+            // In a real app, you would:
+            // 1. Clear the device ID from the user record in your database
+            // 2. This allows the user to login from another device
+            console.log(`Clearing device ID for mobile ${mobile} in database`);
+        }
+        
+        // Expose logout function to MIT App Inventor
+        window.logout = logout;
+    </script>
+</body>
+</html>
