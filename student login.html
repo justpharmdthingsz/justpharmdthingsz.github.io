@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Student Portal</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 450px;
+        }
+        
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .checkbox-group input {
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .toggle-form {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .toggle-form a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .toggle-form a:hover {
+            text-decoration: underline;
+        }
+        
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        
+        .forgot-password a {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .success-message {
+            color: #2ecc71;
+            font-size: 14px;
+            margin: 15px 0;
+            text-align: center;
+            display: none;
+        }
+        
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 25px 20px;
+            }
+            
+            h2 {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+            
+            input, select, button {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Form -->
+        <div class="form-container" id="login-container">
+            <h2>Student Login</h2>
+            <div id="login-success" class="success-message"></div>
+            <div id="login-error" class="error-message"></div>
+            
+            <div class="form-group">
+                <label for="login-identifier">Email or Mobile</label>
+                <input type="text" id="login-identifier" placeholder="Enter email or mobile number">
+                <div class="error-message" id="login-identifier-error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" placeholder="Enter your password">
+                <div class="error-message" id="login-password-error"></div>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="remember-me">
+                <label for="remember-me">Remember me</label>
+            </div>
+            
+            <div class="forgot-password">
+                <a href="#" id="forgot-password">Forgot password?</a>
+            </div>
+            
+            <button id="login-button">Login</button>
+            
+            <div class="toggle-form">
+                New student? <a id="show-signup">Create account</a>
+            </div>
+        </div>
+        
+        <!-- Signup Form -->
+        <div class="form-container" id="signup-container" style="display: none;">
+            <h2>Student Registration</h2>
+            <div id="signup-success" class="success-message"></div>
+            <div id="signup-error" class="error-message"></div>
+            
+            <div class="form-group">
+                <label for="signup-name">Full Name</label>
+                <input type="text" id="signup-name" placeholder="Enter your full name">
+                <div class="error-message" id="signup-name-error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="signup-email">Email Address</label>
+                <input type="email" id="signup-email" placeholder="Enter your email">
+                <div class="error-message" id="signup-email-error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="signup-mobile">Mobile Number</label>
+                <input type="tel" id="signup-mobile" placeholder="Enter 10-digit mobile number">
+                <div class="error-message" id="signup-mobile-error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="signup-password">Password</label>
+                <input type="password" id="signup-password" placeholder="Create password (min 8 characters)">
+                <div class="error-message" id="signup-password-error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="signup-confirm-password">Confirm Password</label>
+                <input type="password" id="signup-confirm-password" placeholder="Confirm your password">
+                <div class="error-message" id="signup-confirm-password-error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="signup-course">Course</label>
+                <select id="signup-course">
+                    <option value="">Select your course</option>
+                    <option value="DPharm">DPharm</option>
+                    <option value="BPharm">BPharm</option>
+                    <option value="PharmD">PharmD</option>
+                </select>
+                <div class="error-message" id="signup-course-error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="signup-graduation">Year of Graduation</label>
+                <input type="number" id="signup-graduation" placeholder="Enter graduation year (e.g., 2025)" min="2000" max="2050">
+                <div class="error-message" id="signup-graduation-error"></div>
+            </div>
+            
+            <button id="signup-button">Register</button>
+            
+            <div class="toggle-form">
+                Already have an account? <a id="show-login">Sign in</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Replace this with your actual Google Script URL after deployment
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzb-SwswWKMLctGqUvC-hQfWcwqumq1bMo4IAvHq2fhmVnTINUP5lVFr5qIeopkjATCuw/exec';
+        
+        // DOM Elements
+        const loginContainer = document.getElementById('login-container');
+        const signupContainer = document.getElementById('signup-container');
+        const showSignup = document.getElementById('show-signup');
+        const showLogin = document.getElementById('show-login');
+        const forgotPassword = document.getElementById('forgot-password');
+        const loginButton = document.getElementById('login-button');
+        const signupButton = document.getElementById('signup-button');
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for remembered user
+            const rememberedUser = localStorage.getItem('rememberedUser');
+            if (rememberedUser) {
+                const user = JSON.parse(rememberedUser);
+                document.getElementById('login-identifier').value = user.identifier;
+                document.getElementById('login-password').value = user.password;
+                document.getElementById('remember-me').checked = true;
+            }
+            
+            // Set up event listeners
+            setupEventListeners();
+        });
+        
+        function setupEventListeners() {
+            // Toggle between forms
+            showSignup.addEventListener('click', showSignupForm);
+            showLogin.addEventListener('click', showLoginForm);
+            
+            // Forgot password
+            forgotPassword.addEventListener('click', handleForgotPassword);
+            
+            // Form submissions
+            loginButton.addEventListener('click', handleLogin);
+            signupButton.addEventListener('click', handleSignup);
+            
+            // Input validation
+            document.getElementById('signup-email').addEventListener('blur', validateEmail);
+            document.getElementById('signup-mobile').addEventListener('blur', validateMobile);
+            document.getElementById('signup-password').addEventListener('blur', validatePassword);
+        }
+        
+        function showSignupForm() {
+            loginContainer.style.display = 'none';
+            signupContainer.style.display = 'block';
+            clearMessages();
+        }
+        
+        function showLoginForm() {
+            signupContainer.style.display = 'none';
+            loginContainer.style.display = 'block';
+            clearMessages();
+        }
+        
+        function clearMessages() {
+            // Clear all error messages
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = 'none';
+                el.textContent = '';
+            });
+            
+            // Clear success messages
+            document.getElementById('login-success').style.display = 'none';
+            document.getElementById('signup-success').style.display = 'none';
+            document.getElementById('login-error').style.display = 'none';
+            document.getElementById('signup-error').style.display = 'none';
+        }
+        
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId + '-error');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+        
+        function validateEmail() {
+            const email = document.getElementById('signup-email').value.trim();
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (!email) {
+                showError('signup-email', 'Email is required');
+                return false;
+            } else if (!re.test(email)) {
+                showError('signup-email', 'Please enter a valid email address');
+                return false;
+            }
+            
+            document.getElementById('signup-email-error').style.display = 'none';
+            return true;
+        }
+        
+        function validateMobile() {
+            const mobile = document.getElementById('signup-mobile').value.trim();
+            const re = /^\d{10}$/;
+            
+            if (!mobile) {
+                showError('signup-mobile', 'Mobile number is required');
+                return false;
+            } else if (!re.test(mobile)) {
+                showError('signup-mobile', 'Please enter a valid 10-digit number');
+                return false;
+            }
+            
+            document.getElementById('signup-mobile-error').style.display = 'none';
+            return true;
+        }
+        
+        function validatePassword() {
+            const password = document.getElementById('signup-password').value.trim();
+            
+            if (!password) {
+                showError('signup-password', 'Password is required');
+                return false;
+            } else if (password.length < 8) {
+                showError('signup-password', 'Password must be at least 8 characters');
+                return false;
+            }
+            
+            document.getElementById('signup-password-error').style.display = 'none';
+            return true;
+        }
+        
+        function validateConfirmPassword() {
+            const password = document.getElementById('signup-password').value.trim();
+            const confirmPassword = document.getElementById('signup-confirm-password').value.trim();
+            
+            if (!confirmPassword) {
+                showError('signup-confirm-password', 'Please confirm your password');
+                return false;
+            } else if (password !== confirmPassword) {
+                showError('signup-confirm-password', 'Passwords do not match');
+                return false;
+            }
+            
+            document.getElementById('signup-confirm-password-error').style.display = 'none';
+            return true;
+        }
+        
+        function handleForgotPassword(e) {
+            e.preventDefault();
+            const email = prompt("Please enter your registered email address:");
+            
+            if (email) {
+                if (!validateEmailInput(email)) {
+                    alert("Please enter a valid email address");
+                    return;
+                }
+                
+                resetPassword(email);
+            }
+        }
+        
+        function validateEmailInput(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(String(email).toLowerCase());
+        }
+        
+        async function resetPassword(email) {
+            try {
+                const response = await fetch(SCRIPT_URL + '?action=resetPassword', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: email })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Password reset instructions have been sent to your email.');
+                } else {
+                    alert(data.message || 'Failed to send reset instructions. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+        
+        async function handleLogin() {
+            clearMessages();
+            
+            const identifier = document.getElementById('login-identifier').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            const rememberMe = document.getElementById('remember-me').checked;
+            
+            let isValid = true;
+            
+            // Validate identifier
+            if (!identifier) {
+                showError('login-identifier', 'Email or mobile is required');
+                isValid = false;
+            }
+            
+            // Validate password
+            if (!password) {
+                showError('login-password', 'Password is required');
+                isValid = false;
+            }
+            
+            if (!isValid) return;
+            
+            try {
+                const response = await fetch(SCRIPT_URL + '?action=login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        identifier: identifier,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Login successful
+                    document.getElementById('login-success').textContent = 'Login successful! Redirecting...';
+                    document.getElementById('login-success').style.display = 'block';
+                    
+                    // Store credentials if remember me is checked
+                    if (rememberMe) {
+                        localStorage.setItem('rememberedUser', JSON.stringify({
+                            identifier: identifier,
+                            password: password
+                        }));
+                    } else {
+                        localStorage.removeItem('rememberedUser');
+                    }
+                    
+                    // Redirect after delay
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                } else {
+                    // Login failed
+                    document.getElementById('login-error').textContent = data.message || 'Invalid credentials. Please try again.';
+                    document.getElementById('login-error').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                document.getElementById('login-error').textContent = 'An error occurred. Please try again.';
+                document.getElementById('login-error').style.display = 'block';
+            }
+        }
+        
+        async function handleSignup() {
+            clearMessages();
+            
+            // Get form values
+            const name = document.getElementById('signup-name').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const mobile = document.getElementById('signup-mobile').value.trim();
+            const password = document.getElementById('signup-password').value.trim();
+            const confirmPassword = document.getElementById('signup-confirm-password').value.trim();
+            const course = document.getElementById('signup-course').value;
+            const graduation = document.getElementById('signup-graduation').value.trim();
+            
+            // Validate all fields
+            let isValid = true;
+            
+            if (!name) {
+                showError('signup-name', 'Full name is required');
+                isValid = false;
+            }
+            
+            if (!validateEmail()) isValid = false;
+            if (!validateMobile()) isValid = false;
+            if (!validatePassword()) isValid = false;
+            if (!validateConfirmPassword()) isValid = false;
+            
+            if (!course) {
+                showError('signup-course', 'Please select your course');
+                isValid = false;
+            }
+            
+            if (!graduation) {
+                showError('signup-graduation', 'Graduation year is required');
+                isValid = false;
+            } else if (graduation.length !== 4 || isNaN(graduation)) {
+                showError('signup-graduation', 'Please enter a valid year (e.g., 2025)');
+                isValid = false;
+            }
+            
+            if (!isValid) return;
+            
+            try {
+                const response = await fetch(SCRIPT_URL + '?action=signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        mobile: mobile,
+                        password: password,
+                        course: course,
+                        graduation: graduation
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Registration successful
+                    document.getElementById('signup-success').textContent = 'Registration successful! Redirecting to login...';
+                    document.getElementById('signup-success').style.display = 'block';
+                    
+                    // Clear form
+                    document.getElementById('signup-name').value = '';
+                    document.getElementById('signup-email').value = '';
+                    document.getElementById('signup-mobile').value = '';
+                    document.getElementById('signup-password').value = '';
+                    document.getElementById('signup-confirm-password').value = '';
+                    document.getElementById('signup-course').value = '';
+                    document.getElementById('signup-graduation').value = '';
+                    
+                    // Switch to login form after delay
+                    setTimeout(() => {
+                        showLoginForm();
+                    }, 2000);
+                } else {
+                    // Registration failed
+                    document.getElementById('signup-error').textContent = data.message || 'Registration failed. Please try again.';
+                    document.getElementById('signup-error').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                document.getElementById('signup-error').textContent = 'An error occurred. Please try again.';
+                document.getElementById('signup-error').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
